@@ -1,0 +1,13 @@
+ervices:
+  - type: web
+    name: webtoon-app
+    env: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn webtoonapp:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: supersecretkey   # ideally change this to a random value
