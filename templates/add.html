@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add a New Webtoon</title> <!-- Browser tab title -->
+    <style>
+        a:visited {
+            color: blue;  /* or same as your unvisited color */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- login info on top right -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+        {% if g.user %}
+            Logged in as {{ g.user.username }} — <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- header on page that takes you to home page when pressed -->
+    <h1><a href="/" style="text-decoration: none; color: inherit;">Webtoon Reading List</a></h1>
+
+    <h2>Add a Webtoon</h2> <!-- 2nd smaller page header -->
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST" action="/add">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" maxlength="80" required><br><br> <!-- input title (char limit of 80) -->
+
+        <label for="chapter">Chapter:</label><br>
+        <input type="number" id="chapter" name="chapter" min="0" value="0" required><br><br> <!-- input chapter number -->
+
+        <label for="read_status">Read Status:</label><br> 
+        <select id="read_status" name="read_status" required> <!-- select reading status -->
+            <option value="Reading">Reading</option>
+            <option value="Read In Future">Read In Future</option>
+            <option value="Marinating">Marinating</option>
+            <option value="Dropped">Dropped</option>
+            <option value="Completed">Completed</option>
+        </select><br><br>
+
+        <label for="webtoon_status">Webtoon Status:</label><br>
+        <select id="webtoon_status" name="webtoon_status" required> <!-- select webtoon status -->
+            <option value="Ongoing">Ongoing</option>
+            <option value="Hiatus">Hiatus</option>
+            <option value="Axed">Axed</option>
+            <option value="Completed">Completed</option>
+        </select><br><br>
+
+        <button type="submit">Add Webtoon</button> <!-- submit button -->
+    </form>
+
+    <br> <!-- line break -->
+    <a href="/">Back To Home</a>
+</body>
+
+</html>

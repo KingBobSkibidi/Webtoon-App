@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webtoon Reading List</title> <!-- Browser tab title -->
+
+    <style>
+        /* Table styling */
+        table { 
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        /* Column-specific widths */
+        th.title, td.title {
+            width: 50%; /* Title (gets most space) */
+        }
+
+        th.chapter, td.chapter {
+            width: 10%; /* Chapter */
+        }
+
+        th.read-status, td.read-status {
+            width: 11%; /* Reading status */
+        }
+
+        th.webtoon-status, td.webtoon-status {
+            width: 11%; /* Webtoon status */
+        }
+
+        th.date-added, td.date-added {
+            width: 10%; /* Date added */
+        }
+
+        th.edit-webtoon, td.edit-webtoon {
+            width: 8%; /* Edit button column */
+        }
+
+        /* Table cell styling */
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            white-space: normal;         /* wraps text at spaces and collapses extra whitespace */
+            word-wrap: break-word;       /* allows long words that would overflow container to wrap/break */
+            overflow-wrap: break-word;   /* same as word-wrap but modern standard */
+        }
+        
+        /* Table header styling */
+        th { 
+            cursor: pointer; /* Makes header look clickable */
+            background-color: #cccccc;
+        }
+
+        th:hover {
+            background-color: #bbbbbb;
+        }
+
+        th.sorted-asc::after {
+            content: " ▲"; /* up arrow for ascending */
+        }
+
+        th.sorted-desc::after {
+            content: " ▼"; /* down arrow for descending */
+        }
+
+        /* Alternating row colors */
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* white */
+        }
+
+        tbody tr:nth-child(even) { 
+            background-color: #f9f9f9; 
+        }
+
+        /* Row hover effect */
+        tbody tr:hover { 
+            background-color: #f1f1f1; 
+        }
+
+        
+        /* Link styling */
+        a:link, a:visited {
+            color: blue; /* Links styling: blue and no purple after clicking */
+            text-decoration: none;
+
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active{
+            color: blue;  /* or same as your unvisited color */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- login info on top right -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+        {% if g.user %}
+            Logged in as {{ g.user.username }} — <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- header -->
+    <h1>Webtoon Reading List</h1> 
+
+    <div style="margin-bottom: 15px;">
+        <div style="margin-bottom: 15px;">
+            <a href="/add" style="margin-right: 10px;">Add a New Webtoon</a> <!-- link to add entries -->
+
+            <form method="POST" action="{{ url_for('delete_all') }}" style="display: inline;"> <!-- delete all button -->
+                <button type="submit" onclick="return confirm('Delete ALL webtoons in list?')">
+                    Delete All Webtoons
+                </button>
+            </form>
+        </div>
+
+        <form action="{{ url_for('search') }}" method="GET"> <!-- search bar -->
+            <input type="text" name="q" placeholder="Search webtoons..." value="{{ search_query or '' }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <p>Click on the column headers to sort the table.</p> <!-- header to clarify how to sort -->
+    {% if webtoons %}
+        <table id="webtoonTable">
+            <thead>
+                <tr>
+                    <th class= "title" onclick="sortTable(0)">Title</th>
+                    <th class= "chapter" onclick="sortTable(1)">Chapter</th>
+                    <th class= "read-status" onclick="sortTable(2)">Read Status</th>
+                    <th class= "webtoon-status" onclick="sortTable(3)">Webtoon Status</th>
+                    <th class= "date-added" onclick="sortTable(4)">Date Added</th>
+                    <th class= "edit-webtoon">Edit Webtoon</th>
+                </tr>
+            </thead>
+            <tbody> 
+                {% for webtoon in webtoons %}
+                    <tr>
+                        <td class= "title">{{ webtoon.title|title }}</td>
+                        <td class= "chapter">{{ webtoon.chapter }}</td>
+                        <td class= "read-status">{{ webtoon['read_status'] }}</td>
+                        <td class= "webtoon-status">{{ webtoon['webtoon_status'] }}</td>
+                        <td class= "date-added" data-timestamp="{{ webtoon.date_added }}">{{ webtoon.date_added[:10] }}</td>
+                        <td class= "edit-webtoon"><a href="/edit/{{ webtoon.id }}">Edit</a></td> <!-- link to edit entries-->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No webtoons found. Add some!</p>
+    {% endif %}
+
+    <br> <!-- line break -->
+
+    <script>
+        // Sort table by column (client-side)
+        function sortTable(columnIndex) {
+            const table = document.getElementById("webtoonTable");
+            const tbody = table.tBodies[0];
+            const rowsArray = Array.from(tbody.rows);
+
+            // Determine current sort direction
+            let asc = table.getAttribute("data-sort-dir") !== "asc";
+
+            // Remove existing sort classes from all headers
+            const headers = table.tHead.rows[0].cells;
+            for (let i = 0; i < headers.length; i++) {
+                headers[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add new sort class to clicked column
+            headers[columnIndex].classList.add(asc ? "sorted-asc" : "sorted-desc");
+            
+            rowsArray.sort((rowA, rowB) => {
+                let cellA = rowA.cells[columnIndex].textContent.trim();
+                let cellB = rowB.cells[columnIndex].textContent.trim();
+
+                if (columnIndex === 4) { // Date Added column
+                    cellA = new Date(rowA.cells[columnIndex].getAttribute('data-timestamp'));
+                    cellB = new Date(rowB.cells[columnIndex].getAttribute('data-timestamp'));
+                }
+
+                // Check if numeric
+                if (!isNaN(cellA) && !isNaN(cellB)) {
+                    return asc ? cellA - cellB : cellB - cellA;
+                } else {
+                    return asc ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                }
+            });
+
+            // Re-append sorted rows
+            rowsArray.forEach(row => tbody.appendChild(row));
+            table.setAttribute("data-sort-dir", asc ? "asc" : "desc");
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Webtoon</title> <!-- Browser tab title -->
+    <style>
+        a:visited {
+            color: blue;  /* or same as your unvisited color */
+            text-decoration: underline;
+        }
+
+        h1, h2 {
+            white-space: normal;         /* wraps text at spaces and collapses extra whitespace */
+            word-wrap: break-word;       /* allows long words that would overflow container to wrap/break */
+            overflow-wrap: break-word;   /* same as word-wrap but modern standard */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- login info on top right -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+        {% if g.user %}
+            Logged in as {{ g.user.username }} — <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- header on page that takes you to home page when pressed -->
+    <h1><a href="/" style="text-decoration: none; color: inherit;">Webtoon Reading List</a></h1>
+    
+    <h2>Edit Webtoon: {{ webtoon.title|title }}</h2> <!-- 2nd smaller page header -->
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" value="{{ webtoon.title }}"  maxlength="80" required><br><br> <!-- edit title -->
+
+        <label for="chapter">Chapter:</label><br>
+        <input type="number" id="chapter" name="chapter" min="0" value="{{ webtoon.chapter }}" required><br><br> <!-- edit chapter number -->
+
+        <label for="read_status">Read Status:</label><br>
+        <select id="read_status" name="read_status" required> <!-- edit reading status -->
+            <option value="Reading" {% if webtoon.read_status == "Reading" %}selected{% endif %}>Reading</option>
+            <option value="Read In Future" {% if webtoon.read_status == "Read In Future" %}selected{% endif %}>Read In Future</option>
+            <option value="Marinating" {% if webtoon.read_status == "Marinating" %}selected{% endif %}>Marinating</option>
+            <option value="Dropped" {% if webtoon.read_status == "Dropped" %}selected{% endif %}>Dropped</option>
+            <option value="Completed" {% if webtoon.read_status == "Completed" %}selected{% endif %}>Completed</option>
+        </select><br><br>
+
+        <label for="webtoon_status">Webtoon Status:</label><br>
+        <select id="webtoon_status" name="webtoon_status" required> <!-- edit webtoon status -->
+            <option value="Ongoing" {% if webtoon.webtoon_status == "Ongoing" %}selected{% endif %}>Ongoing</option>
+            <option value="Hiatus" {% if webtoon.webtoon_status == "Hiatus" %}selected{% endif %}>Hiatus</option>
+            <option value="Axed" {% if webtoon.webtoon_status == "Axed" %}selected{% endif %}>Axed</option>
+            <option value="Completed" {% if webtoon.webtoon_status == "Completed" %}selected{% endif %}>Completed</option>
+        </select><br><br>
+
+        <button type="submit">Save Changes</button> <!-- submit button -->
+    </form>
+
+    <form method="POST" action="/delete/{{ webtoon.id }}" style="margin-top: 10px;">
+        <button type="submit" onclick="return confirm('Delete {{ webtoon.title|title }} from list?')">Delete</button>
+    </form>
+
+    <br>
+    <a href="/">Back To Home</a>
+</body>
+
+</html>
