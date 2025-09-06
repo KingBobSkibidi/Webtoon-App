@@ -9,10 +9,45 @@
             text-decoration: underline;
         }
 
+        :root {
+            --green-light: #b8e0d2;
+            --green-dark: #a1d9b1;
+            --green-hover: #82c99c;
+            --row-even: #f1fdf7;
+            --row-hover: #d8f2e2;
+            --text-color: #333333;
+            --bg-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Login bar top right */
+        .top-bar {
+            background-color: var(--green-light);
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+
+        /* Top and 2nd header*/
         h1, h2 {
             white-space: normal;         /* wraps text at spaces and collapses extra whitespace */
             word-wrap: break-word;       /* allows long words that would overflow container to wrap/break */
             overflow-wrap: break-word;   /* same as word-wrap but modern standard */
+            background-color: var(--green-light);
+            padding: 15px;
+            margin: 0;
+        } 
+
+        /* forms with side padding */
+        .forms {
+            padding: 0 15px;
         }
     </style>
 </head>
@@ -36,7 +71,8 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 
-    <form method="POST">
+    <div style="margin-bottom: 15px;"></div>
+    <form class = "forms" method="POST">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" value="{{ webtoon.title }}"  maxlength="80" required><br><br> <!-- edit title -->
 
@@ -63,12 +99,12 @@
         <button type="submit">Save Changes</button> <!-- submit button -->
     </form>
 
-    <form method="POST" action="/delete/{{ webtoon.id }}" style="margin-top: 10px;">
+    <form class = "forms" method="POST" action="/delete/{{ webtoon.id }}" style="margin-top: 10px;">
         <button type="submit" onclick="return confirm('Delete {{ webtoon.title|title }} from list?')">Delete</button>
     </form>
 
     <br>
-    <a href="/">Back To Home</a>
+    <a class = "forms" href="/">Back To Home</a>
 </body>
 
 </html>

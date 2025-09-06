@@ -8,6 +8,45 @@
             color: blue;  /* or same as your unvisited color */
             text-decoration: underline;
         }
+
+        :root {
+            --green-light: #b8e0d2;
+            --green-dark: #a1d9b1;
+            --green-hover: #82c99c;
+            --row-even: #f1fdf7;
+            --row-hover: #d8f2e2;
+            --text-color: #333333;
+            --bg-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Login bar top right */
+        .top-bar {
+            background-color: var(--green-light);
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+
+        /* Top and 2nd header */
+        h1, h2 {
+            background-color: var(--green-light);
+            padding: 15px;
+            margin: 0;
+        }
+
+        /* forms with side padding */
+        .forms {
+            padding: 0 15px;
+        }
+
     </style>
 </head>
 
@@ -30,7 +69,8 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
     
-    <form method="POST" action="/add">
+    <form class = "forms" method="POST" action="/add">
+        <div style="margin-bottom: 15px;"></div>
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" maxlength="80" required><br><br> <!-- input title (char limit of 80) -->
 
@@ -58,7 +98,7 @@
     </form>
 
     <br> <!-- line break -->
-    <a href="/">Back To Home</a>
+    <a class="forms" href="/">Back To Home</a>
 </body>
 
 </html>

@@ -7,6 +7,53 @@
     <title>Webtoon Reading List</title> <!-- Browser tab title -->
 
     <style>
+        :root {
+            --green-light: #b8e0d2;
+            --green-dark: #a1d9b1;
+            --green-hover: #82c99c;
+            --row-even: #f1fdf7;
+            --row-hover: #d8f2e2;
+            --text-color: #333333;
+            --bg-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Login bar top right */
+        .top-bar {
+            background-color: var(--green-light);
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+
+        /* Top header */
+        h1 {
+            background-color: var(--green-light);
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Controls section (Add, Delete, Search) */
+        .controls {
+            background-color: var(--green-light);
+            padding: 10px 20px;
+            border-bottom: 2px solid var(--green-dark);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Table container with side padding */
+        .table-container {
+            padding: 0 15px;
+        }
+
         /* Table styling */
         table { 
             border-collapse: collapse;
@@ -97,6 +144,8 @@
             color: blue;  /* or same as your unvisited color */
             text-decoration: underline;
         }
+
+        
     </style>
 </head>
 
@@ -113,7 +162,7 @@
     <!-- header -->
     <h1>Webtoon Reading List</h1> 
 
-    <div style="margin-bottom: 15px;">
+    <div class="controls">
         <div style="margin-bottom: 15px;">
             <a href="/add" style="margin-right: 10px;">Add a New Webtoon</a> <!-- link to add entries -->
 
@@ -130,35 +179,37 @@
         </form>
     </div>
 
-    <p>Click on the column headers to sort the table.</p> <!-- header to clarify how to sort -->
-    {% if webtoons %}
-        <table id="webtoonTable">
-            <thead>
-                <tr>
-                    <th class= "title" onclick="sortTable(0)">Title</th>
-                    <th class= "chapter" onclick="sortTable(1)">Chapter</th>
-                    <th class= "read-status" onclick="sortTable(2)">Read Status</th>
-                    <th class= "webtoon-status" onclick="sortTable(3)">Webtoon Status</th>
-                    <th class= "date-added" onclick="sortTable(4)">Date Added</th>
-                    <th class= "edit-webtoon">Edit Webtoon</th>
-                </tr>
-            </thead>
-            <tbody> 
-                {% for webtoon in webtoons %}
+    <div class = "table-container">
+        <p>Click on the column headers to sort the table.</p> <!-- header to clarify how to sort -->
+        {% if webtoons %}
+            <table id="webtoonTable">
+                <thead>
                     <tr>
-                        <td class= "title">{{ webtoon.title|title }}</td>
-                        <td class= "chapter">{{ webtoon.chapter }}</td>
-                        <td class= "read-status">{{ webtoon['read_status'] }}</td>
-                        <td class= "webtoon-status">{{ webtoon['webtoon_status'] }}</td>
-                        <td class= "date-added" data-timestamp="{{ webtoon.date_added }}">{{ webtoon.date_added[:10] }}</td>
-                        <td class= "edit-webtoon"><a href="/edit/{{ webtoon.id }}">Edit</a></td> <!-- link to edit entries-->
+                        <th class= "title" onclick="sortTable(0)">Title</th>
+                        <th class= "chapter" onclick="sortTable(1)">Chapter</th>
+                        <th class= "read-status" onclick="sortTable(2)">Read Status</th>
+                        <th class= "webtoon-status" onclick="sortTable(3)">Webtoon Status</th>
+                        <th class= "date-added" onclick="sortTable(4)">Date Added</th>
+                        <th class= "edit-webtoon">Edit Webtoon</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No webtoons found. Add some!</p>
-    {% endif %}
+                </thead>
+                <tbody> 
+                    {% for webtoon in webtoons %}
+                        <tr>
+                            <td class= "title">{{ webtoon.title|title }}</td>
+                            <td class= "chapter">{{ webtoon.chapter }}</td>
+                            <td class= "read-status">{{ webtoon['read_status'] }}</td>
+                            <td class= "webtoon-status">{{ webtoon['webtoon_status'] }}</td>
+                            <td class= "date-added" data-timestamp="{{ webtoon.date_added }}">{{ webtoon.date_added[:10] }}</td>
+                            <td class= "edit-webtoon"><a href="/edit/{{ webtoon.id }}">Edit</a></td> <!-- link to edit entries-->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No webtoons found. Add some!</p>
+        {% endif %}
+    </div>
 
     <br> <!-- line break -->
 

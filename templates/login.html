@@ -8,10 +8,57 @@
             color: blue;  /* or same as your unvisited color */
             text-decoration: underline;
         }
+
+        :root {
+            --green-light: #b8e0d2;
+            --green-dark: #a1d9b1;
+            --green-hover: #82c99c;
+            --row-even: #f1fdf7;
+            --row-hover: #d8f2e2;
+            --text-color: #333333;
+            --bg-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Login bar top right */
+        .top-bar {
+            background-color: var(--green-light);
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+
+        /* Top and 2nd header */
+        h1{
+            background-color: var(--green-light);
+            padding: 15px;
+            margin: 0;
+        }
+
+        /* forms with side padding */
+        h2, .forms {
+            padding: 0 15px;
+        }
     </style>
 </head>
 
 <body>
+    <!-- login info on top right -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+        {% if g.user %}
+            Logged in as {{ g.user.username }} — <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+
     <!-- header on page that takes you to home page when pressed -->
     <h1><a href="/" style="text-decoration: none; color: inherit;">Webtoon Reading List</a></h1>
 
@@ -21,17 +68,17 @@
     {% if messages %}<ul>{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
     {% endwith %}
 
-    <form method="post">
+    <div style="margin-bottom: 15px;"></div>
+    <form class = "forms" method="post">
     <input name="username" placeholder="Username">
     <input name="password" type="password" placeholder="Password">
     <button type="submit">Login</button>
     </form>
 
-
-    <p>No account? <a href="{{ url_for('register') }}">Register</a></p>
+    <p class = forms>No account? <a href="{{ url_for('register') }}">Register</a></p>
 
     <br> <!-- line break -->
-    <a href="/">Back To Home</a>
+    <a class = "forms" href="/">Back To Home</a>
 </body>
 
 </html>
