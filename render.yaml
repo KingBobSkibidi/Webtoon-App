@@ -10,4 +10,4 @@ services:
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
-        value: supersecretkey   # ideally change this to a random value
+        value: supersecretkey # ideally change this to a random value

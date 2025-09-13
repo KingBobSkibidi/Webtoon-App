@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # needed for session management
@@ -12,8 +13,10 @@ def titlecase(value):
 app.jinja_env.filters['titlecase'] = titlecase
 
 #database connection
+DATABASE_PATH = os.path.join(os.path.dirname(__file__), 'webtoons.db')
+
 def get_db_connection():
-    conn = sqlite3.connect('webtoons.db')
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
